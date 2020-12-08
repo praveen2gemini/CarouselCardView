@@ -67,7 +67,7 @@
         <enum name="gone" value="8" />
     </attr>
 
-    <declare-styleable name="CirclePageIndicator">
+    <declare-styleable name="CircleCorePageIndicator">
         <!-- Whether or not the indicators should be centered. -->
         <attr name="centered" />
         <!-- Color of the filled circle that represents the current page. -->
@@ -88,7 +88,7 @@
         <attr name="android:background" />
     </declare-styleable>
 
-    <declare-styleable name="CarouselView">
+    <declare-styleable name="CarouselCardView">
         <!-- Interval of the indicator to slide. -->
         <attr name="slideInterval" />
         <!-- Gravity of the indicator.  (Just like layout_gravity)-->

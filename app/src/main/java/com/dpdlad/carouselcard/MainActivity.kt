@@ -1,16 +1,16 @@
 package com.dpdlad.carouselcard
 
 import android.os.Bundle
-import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import com.dpdlad.carousel.CarouselView
-import com.dpdlad.carousel.ImageListener
+import com.dpdlad.carousel.CarouselCardView
+import com.dpdlad.carousel.CarouselCardImageUpdater
 import com.squareup.picasso.Picasso
 
-class MainActivity : AppCompatActivity(), ImageListener {
+class MainActivity : AppCompatActivity(),
+    CarouselCardImageUpdater {
 
-    private var customCarouselView: CarouselView? = null
+    private var customCarouselCardView: CarouselCardView? = null
     var sampleImages = intArrayOf(
         R.drawable.image_1,
         R.drawable.image_2,
@@ -28,15 +28,15 @@ class MainActivity : AppCompatActivity(), ImageListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        customCarouselView = findViewById(R.id.customCarouselView)
-        customCarouselView?.apply {
+        customCarouselCardView = findViewById(R.id.customCarouselView)
+        customCarouselCardView?.apply {
             pageCount = sampleNetworkImageURLs.size
             slideInterval = 3000
             setImageListener(this@MainActivity)
         }
     }
 
-    override fun setImageForPosition(position: Int, imageView: ImageView?) {
+    override fun setImageForPosition(imageView: ImageView?, position: Int) {
         Picasso.with(applicationContext).load(sampleNetworkImageURLs[position])
             .placeholder(sampleImages[0]).error(sampleImages[3]).fit().centerCrop()
             .into(imageView)

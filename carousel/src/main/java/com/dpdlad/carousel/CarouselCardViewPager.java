@@ -9,26 +9,26 @@ import androidx.viewpager.widget.ViewPager;
 
 import java.lang.reflect.Field;
 
-public class CarouselViewPager extends ViewPager {
+public class CarouselCardViewPager extends ViewPager {
 
-    private ImageClickListener imageClickListener;
+    private CarouselImageClickListener carouselImageClickListener;
     private float oldX = 0, newX = 0, sens = 5;
 
-    public void setImageClickListener(ImageClickListener imageClickListener) {
-        this.imageClickListener = imageClickListener;
+    public void setCarouselImageClickListener(CarouselImageClickListener carouselImageClickListener) {
+        this.carouselImageClickListener = carouselImageClickListener;
     }
 
-    public CarouselViewPager(Context context) {
+    public CarouselCardViewPager(Context context) {
         super(context);
         postInitViewPager();
     }
 
-    public CarouselViewPager(Context context, AttributeSet attrs) {
+    public CarouselCardViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
         postInitViewPager();
     }
 
-    private CarouselViewPagerScroller mScroller = null;
+    private CarouselCardViewPagerScroller mScroller = null;
 
     /**
      * Override the Scroller instance with our own class so we can change the
@@ -42,7 +42,7 @@ public class CarouselViewPager extends ViewPager {
             Field interpolator = viewpager.getDeclaredField("sInterpolator");
             interpolator.setAccessible(true);
 
-            mScroller = new CarouselViewPagerScroller(getContext(),
+            mScroller = new CarouselCardViewPagerScroller(getContext(),
                     (Interpolator) interpolator.get(null));
             scroller.set(this, mScroller);
         } catch (Exception e) {
@@ -66,8 +66,8 @@ public class CarouselViewPager extends ViewPager {
             case MotionEvent.ACTION_UP:
                 newX = ev.getX();
                 if (Math.abs(oldX - newX) < sens) {
-                    if(imageClickListener != null)
-                        imageClickListener.onClick(getCurrentItem());
+                    if(carouselImageClickListener != null)
+                        carouselImageClickListener.onCarouselImageSelected(getCurrentItem());
                     return true;
                 }
                 oldX = 0;

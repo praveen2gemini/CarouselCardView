@@ -16,7 +16,7 @@ import java.lang.annotation.RetentionPolicy;
  *
  * Usage: viewPager.setPageTransformer(false, new ReaderViewPagerTransformer(TransformType.FLOW));
  */
-public class CarouselViewPagerTransformer implements ViewPager.PageTransformer {
+public class CarouselCardViewPagerTransformer implements ViewPager.PageTransformer {
 
     private final int mTransformType;
 
@@ -34,7 +34,7 @@ public class CarouselViewPagerTransformer implements ViewPager.PageTransformer {
     public static final int ZOOM = 3;
     public static final int DEFAULT = -1;
 
-    CarouselViewPagerTransformer(int transformType) {
+    CarouselCardViewPagerTransformer(int transformType) {
         mTransformType = transformType;
     }
 

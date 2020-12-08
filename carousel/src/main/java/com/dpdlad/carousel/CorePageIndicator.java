@@ -7,7 +7,7 @@ import androidx.viewpager.widget.ViewPager;
  * A PageIndicator is responsible to show an visual indicator on the total views
  * number and the current visible view.
  */
-public interface PageIndicator extends ViewPager.OnPageChangeListener {
+public interface CorePageIndicator extends ViewPager.OnPageChangeListener {
     /**
      * Bind the indicator to a ViewPager.
      *

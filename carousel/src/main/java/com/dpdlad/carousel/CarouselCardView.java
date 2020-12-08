@@ -21,13 +21,8 @@ import androidx.viewpager.widget.ViewPager;
 import java.util.Timer;
 import java.util.TimerTask;
 
-/**
- * Created by Sayyam on 11/25/15.
- *
- * @attr ref R.styleable#CarouselView_pageTransformer
- */
 @RemoteView
-public class CarouselView extends FrameLayout {
+public class CarouselCardView extends FrameLayout {
 
     private final int DEFAULT_GRAVITY = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
 
@@ -44,11 +39,10 @@ public class CarouselView extends FrameLayout {
     private int pageTransformInterval = DEFAULT_SLIDE_VELOCITY;
     private int indicatorVisibility = DEFAULT_INDICATOR_VISIBILITY;
 
-    private CarouselViewPager containerViewPager;
-    private CirclePageIndicator mIndicator;
-    private ViewListener mViewListener = null;
-    private ImageListener mImageListener = null;
-    private ImageClickListener imageClickListener = null;
+    private CarouselCardViewPager containerViewPager;
+    private CircleCorePageIndicator mIndicator;
+    private CarouselCardImageUpdater mCarouselCardImageUpdater = null;
+    private CarouselImageClickListener carouselImageClickListener = null;
 
     private Timer swipeTimer;
     private SwipeTask swipeTask;
@@ -61,22 +55,22 @@ public class CarouselView extends FrameLayout {
 
     private ViewPager.PageTransformer pageTransformer;
 
-    public CarouselView(Context context) {
+    public CarouselCardView(Context context) {
         super(context);
     }
 
-    public CarouselView(Context context, AttributeSet attrs) {
+    public CarouselCardView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initView(context, attrs, 0, 0);
     }
 
-    public CarouselView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CarouselCardView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initView(context, attrs, defStyleAttr, 0);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public CarouselView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public CarouselCardView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initView(context, attrs, defStyleAttr, defStyleRes);
     }
@@ -93,42 +87,42 @@ public class CarouselView extends FrameLayout {
 
 
             //Retrieve styles attributes
-            TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CarouselView, defStyleAttr, 0);
+            TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CarouselCardView, defStyleAttr, 0);
             try {
-                indicatorMarginVertical = a.getDimensionPixelSize(R.styleable.CarouselView_indicatorMarginVertical, getResources().getDimensionPixelSize(R.dimen.default_indicator_margin_vertical));
-                indicatorMarginHorizontal = a.getDimensionPixelSize(R.styleable.CarouselView_indicatorMarginHorizontal, getResources().getDimensionPixelSize(R.dimen.default_indicator_margin_horizontal));
-                setPageTransformInterval(a.getInt(R.styleable.CarouselView_pageTransformInterval, DEFAULT_SLIDE_VELOCITY));
-                setSlideInterval(a.getInt(R.styleable.CarouselView_slideInterval, DEFAULT_SLIDE_INTERVAL));
-                setOrientation(a.getInt(R.styleable.CarouselView_indicatorOrientation, LinearLayout.HORIZONTAL));
-                setIndicatorGravity(a.getInt(R.styleable.CarouselView_indicatorGravity, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL));
-                setAutoPlay(a.getBoolean(R.styleable.CarouselView_autoPlay, true));
-                setDisableAutoPlayOnUserInteraction(a.getBoolean(R.styleable.CarouselView_disableAutoPlayOnUserInteraction, false));
-                setAnimateOnBoundary(a.getBoolean(R.styleable.CarouselView_animateOnBoundary, true));
-                setPageTransformer(a.getInt(R.styleable.CarouselView_pageTransformer, CarouselViewPagerTransformer.DEFAULT));
+                indicatorMarginVertical = a.getDimensionPixelSize(R.styleable.CarouselCardView_indicatorMarginVertical, getResources().getDimensionPixelSize(R.dimen.default_indicator_margin_vertical));
+                indicatorMarginHorizontal = a.getDimensionPixelSize(R.styleable.CarouselCardView_indicatorMarginHorizontal, getResources().getDimensionPixelSize(R.dimen.default_indicator_margin_horizontal));
+                setPageTransformInterval(a.getInt(R.styleable.CarouselCardView_pageTransformInterval, DEFAULT_SLIDE_VELOCITY));
+                setSlideInterval(a.getInt(R.styleable.CarouselCardView_slideInterval, DEFAULT_SLIDE_INTERVAL));
+                setOrientation(a.getInt(R.styleable.CarouselCardView_indicatorOrientation, LinearLayout.HORIZONTAL));
+                setIndicatorGravity(a.getInt(R.styleable.CarouselCardView_indicatorGravity, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL));
+                setAutoPlay(a.getBoolean(R.styleable.CarouselCardView_autoPlay, true));
+                setDisableAutoPlayOnUserInteraction(a.getBoolean(R.styleable.CarouselCardView_disableAutoPlayOnUserInteraction, false));
+                setAnimateOnBoundary(a.getBoolean(R.styleable.CarouselCardView_animateOnBoundary, true));
+                setPageTransformer(a.getInt(R.styleable.CarouselCardView_pageTransformer, CarouselCardViewPagerTransformer.DEFAULT));
 
-                indicatorVisibility = a.getInt(R.styleable.CarouselView_indicatorVisibility, CarouselView.DEFAULT_INDICATOR_VISIBILITY);
+                indicatorVisibility = a.getInt(R.styleable.CarouselCardView_indicatorVisibility, CarouselCardView.DEFAULT_INDICATOR_VISIBILITY);
 
                 setIndicatorVisibility(indicatorVisibility);
 
                 if (indicatorVisibility == View.VISIBLE) {
-                    int fillColor = a.getColor(R.styleable.CarouselView_fillColor, 0);
+                    int fillColor = a.getColor(R.styleable.CarouselCardView_fillColor, 0);
                     if (fillColor != 0) {
                         setFillColor(fillColor);
                     }
-                    int pageColor = a.getColor(R.styleable.CarouselView_pageColor, 0);
+                    int pageColor = a.getColor(R.styleable.CarouselCardView_pageColor, 0);
                     if (pageColor != 0) {
                         setPageColor(pageColor);
                     }
-                    float radius = a.getDimensionPixelSize(R.styleable.CarouselView_radius, 0);
+                    float radius = a.getDimensionPixelSize(R.styleable.CarouselCardView_radius, 0);
                     if (radius != 0) {
                         setRadius(radius);
                     }
-                    setSnap(a.getBoolean(R.styleable.CarouselView_snap, getResources().getBoolean(R.bool.default_circle_indicator_snap)));
-                    int strokeColor = a.getColor(R.styleable.CarouselView_strokeColor, 0);
+                    setSnap(a.getBoolean(R.styleable.CarouselCardView_snap, getResources().getBoolean(R.bool.default_circle_indicator_snap)));
+                    int strokeColor = a.getColor(R.styleable.CarouselCardView_strokeColor, 0);
                     if (strokeColor != 0) {
                         setStrokeColor(strokeColor);
                     }
-                    float strokeWidth = a.getDimensionPixelSize(R.styleable.CarouselView_strokeWidth, 0);
+                    float strokeWidth = a.getDimensionPixelSize(R.styleable.CarouselCardView_strokeWidth, 0);
                     if (strokeWidth != 0) {
                         setStrokeWidth(strokeWidth);
                     }
@@ -213,11 +207,11 @@ public class CarouselView extends FrameLayout {
     /**
      * Sets page transition animation.
      *
-     * @param transformer Pass {@link CarouselViewPagerTransformer#FLOW}, {@link CarouselViewPagerTransformer#ZOOM}, {@link CarouselViewPagerTransformer#DEPTH} or {@link CarouselViewPagerTransformer#SLIDE_OVER}
+     * @param transformer Pass {@link CarouselCardViewPagerTransformer#FLOW}, {@link CarouselCardViewPagerTransformer#ZOOM}, {@link CarouselCardViewPagerTransformer#DEPTH} or {@link CarouselCardViewPagerTransformer#SLIDE_OVER}
      * @attr
      */
-    public void setPageTransformer(@CarouselViewPagerTransformer.Transformer int transformer) {
-        setPageTransformer(new CarouselViewPagerTransformer(transformer));
+    public void setPageTransformer(@CarouselCardViewPagerTransformer.Transformer int transformer) {
+        setPageTransformer(new CarouselCardViewPagerTransformer(transformer));
 
     }
 
@@ -320,7 +314,7 @@ public class CarouselView extends FrameLayout {
             Object objectToReturn;
 
             //Either let user set image to ImageView
-            if (mImageListener != null) {
+            if (mCarouselCardImageUpdater != null) {
 
                 ImageView imageView = new ImageView(mContext);
                 imageView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));  //setting image position
@@ -328,22 +322,11 @@ public class CarouselView extends FrameLayout {
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
                 objectToReturn = imageView;
-                mImageListener.setImageForPosition(position, imageView);
+                mCarouselCardImageUpdater.setImageForPosition(imageView, position);
                 collection.addView(imageView);
                 //Or let user add his own ViewGroup
-            } else if (mViewListener != null) {
-
-                View view = mViewListener.setViewForPosition(position);
-
-                if (null != view) {
-                    objectToReturn = view;
-                    collection.addView(view);
-                } else {
-                    throw new RuntimeException("View can not be null for position " + position);
-                }
-
             } else {
-                throw new RuntimeException("View must set " + ImageListener.class.getSimpleName() + " or " + ViewListener.class.getSimpleName() + ".");
+                throw new RuntimeException("View must set " + CarouselCardImageUpdater.class.getSimpleName() + ".");
             }
 
             return objectToReturn;
@@ -414,17 +397,13 @@ public class CarouselView extends FrameLayout {
         }
     }
 
-    public void setImageListener(ImageListener mImageListener) {
-        this.mImageListener = mImageListener;
+    public void setImageListener(CarouselCardImageUpdater mCarouselCardImageUpdater) {
+        this.mCarouselCardImageUpdater = mCarouselCardImageUpdater;
     }
 
-    public void setViewListener(ViewListener mViewListener) {
-        this.mViewListener = mViewListener;
-    }
-
-    public void setImageClickListener(ImageClickListener imageClickListener) {
-        this.imageClickListener = imageClickListener;
-        containerViewPager.setImageClickListener(imageClickListener);
+    public void setCarouselImageClickListener(CarouselImageClickListener carouselImageClickListener) {
+        this.carouselImageClickListener = carouselImageClickListener;
+        containerViewPager.setCarouselImageClickListener(carouselImageClickListener);
     }
 
     public int getPageCount() {
@@ -472,7 +451,7 @@ public class CarouselView extends FrameLayout {
         return indicatorMarginHorizontal;
     }
 
-    public CarouselViewPager getContainerViewPager() {
+    public CarouselCardViewPager getContainerViewPager() {
         return containerViewPager;
     }
 
