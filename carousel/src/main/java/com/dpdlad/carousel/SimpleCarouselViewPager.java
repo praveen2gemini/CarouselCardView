@@ -9,7 +9,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import java.lang.reflect.Field;
 
-public class CarouselCardViewPager extends ViewPager {
+public class SimpleCarouselViewPager extends ViewPager {
 
     private CarouselImageClickListener carouselImageClickListener;
     private float oldX = 0, newX = 0, sens = 5;
@@ -18,17 +18,17 @@ public class CarouselCardViewPager extends ViewPager {
         this.carouselImageClickListener = carouselImageClickListener;
     }
 
-    public CarouselCardViewPager(Context context) {
+    public SimpleCarouselViewPager(Context context) {
         super(context);
         postInitViewPager();
     }
 
-    public CarouselCardViewPager(Context context, AttributeSet attrs) {
+    public SimpleCarouselViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
         postInitViewPager();
     }
 
-    private CarouselCardViewPagerScroller mScroller = null;
+    private SimpleCarouselViewPagerScroller mScroller = null;
 
     /**
      * Override the Scroller instance with our own class so we can change the
@@ -42,7 +42,7 @@ public class CarouselCardViewPager extends ViewPager {
             Field interpolator = viewpager.getDeclaredField("sInterpolator");
             interpolator.setAccessible(true);
 
-            mScroller = new CarouselCardViewPagerScroller(getContext(),
+            mScroller = new SimpleCarouselViewPagerScroller(getContext(),
                     (Interpolator) interpolator.get(null));
             scroller.set(this, mScroller);
         } catch (Exception e) {

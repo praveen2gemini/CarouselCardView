@@ -4,16 +4,16 @@ import android.content.Context;
 import android.view.animation.Interpolator;
 import android.widget.Scroller;
 
-public class CarouselCardViewPagerScroller extends Scroller {
+public class SimpleCarouselViewPagerScroller extends Scroller {
 
 
     private int mScrollDuration = 600;
 
-    public CarouselCardViewPagerScroller(Context context) {
+    public SimpleCarouselViewPagerScroller(Context context) {
         super(context);
     }
 
-    public CarouselCardViewPagerScroller(Context context, Interpolator interpolator) {
+    public SimpleCarouselViewPagerScroller(Context context, Interpolator interpolator) {
         super(context, interpolator);
     }
 

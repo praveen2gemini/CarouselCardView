@@ -6,14 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.dpdlad.carousel.CarouselCardView
+    <com.dpdlad.carousel.SimpleCarouselView
         android:id="@+id/customCarouselView"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginTop="20dp"
         app:disableAutoPlayOnUserInteraction="false"
         app:fillColor="#FFFFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -22,5 +21,14 @@
         app:strokeColor="#FF777777"
         app:strokeWidth="1dp" />
 
+
+    <com.dpdlad.carousel.card.CarouselCardView
+        android:id="@+id/carouselRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/customCarouselView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
