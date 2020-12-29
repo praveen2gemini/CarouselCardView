@@ -10,13 +10,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dpdlad.carousel.R
 import java.util.*
 
+/**
+ *  @author Praveen Kumar Sugumaran
+ */
 class CarouselCardView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
-    private val DEFAULT_SLIDE_INTERVAL = 3500
     private var recyclerView: RecyclerView? = null
     private var onCarouselClickListener: CarouselClickListener? = null
     private var swipeTimer: Timer? = null
@@ -24,6 +26,9 @@ class CarouselCardView @JvmOverloads constructor(
     private val snapHelper = PagerSnapHelper()
     private val layoutManager: SnappingLinearLayoutManager
     private var totalBannerCount = 0
+    private val urls = ArrayList<BannerUrlInfo>()
+    private var slideInterval: Long = DEFAULT_SLIDE_INTERVAL
+    private var isAutoScroll: Boolean = DEFAULT_AUTO_SCROLL
 
     init {
         orientation = HORIZONTAL
@@ -33,19 +38,27 @@ class CarouselCardView @JvmOverloads constructor(
         recyclerView?.apply {
             snapHelper.attachToRecyclerView(this)
             val layoutManager = SnappingLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL)
-//            val layoutManager = LinearLayoutManager(context)
-//            layoutManager.orientation = LinearLayoutManager.HORIZONTAL
             this.layoutManager = layoutManager
         }
-//        recyclerView?.postDelayed({ recyclerView?.smoothScrollToPosition(3) }, 2000L)
     }
 
     fun setOnCarouselClickListener(onClickListener: CarouselClickListener?) {
         this.onCarouselClickListener = onClickListener
     }
 
+    fun setSlideInterval(slideInterval: Long) {
+        this.slideInterval = slideInterval
+    }
 
-    fun loadBanners(urls: ArrayList<String>) {
+    fun setAutoScroll(isAutoScroll: Boolean) {
+        this.isAutoScroll = isAutoScroll
+    }
+
+    fun loadBanners(urls: ArrayList<BannerUrlInfo>) {
+        this.urls.apply {
+            clear()
+            addAll(urls)
+        }
         totalBannerCount = urls.size
         recyclerView?.adapter = CarouselViewAdapter().apply {
             setCarouselClickListener(onCarouselClickListener)
@@ -54,7 +67,7 @@ class CarouselCardView @JvmOverloads constructor(
         }
     }
 
-    fun resetScrollTimer() {
+    private fun resetScrollTimer() {
         stopScrollTimer()
         swipeTimer = Timer()
         swipeTask = SwiperTask(this, recyclerView, snapHelper)
@@ -71,16 +84,18 @@ class CarouselCardView @JvmOverloads constructor(
     }
 
     /**
-     * Starts auto scrolling if
+     * Starts auto scrolling
      */
-    fun playCarousel() {
+    private fun playCarousel() {
         resetScrollTimer()
         swipeTask?.setTotalBannerCount(totalBannerCount)
-        swipeTimer?.schedule(
-            swipeTask,
-            DEFAULT_SLIDE_INTERVAL.toLong(),
-            DEFAULT_SLIDE_INTERVAL.toLong()
-        )
+        if (isAutoScroll) {
+            swipeTimer?.schedule(
+                swipeTask,
+                slideInterval,
+                slideInterval
+            )
+        }
     }
 
     override fun onAttachedToWindow() {
@@ -91,6 +106,10 @@ class CarouselCardView @JvmOverloads constructor(
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         resetScrollTimer()
+    }
+
+    fun getBannerUrls(): ArrayList<BannerUrlInfo> {
+        return this.urls
     }
 
     class SwiperTask(
@@ -120,5 +139,10 @@ class CarouselCardView @JvmOverloads constructor(
                 recyclerView.smoothScrollToPosition(snapPosition)
             }
         }
+    }
+
+    companion object {
+        private const val DEFAULT_SLIDE_INTERVAL = 10000L
+        private const val DEFAULT_AUTO_SCROLL = true
     }
 }

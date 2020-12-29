@@ -7,6 +7,9 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 
+/**
+ *  @author Praveen Kumar Sugumaran
+ */
 class SnappingLinearLayoutManager(context: Context?, orientation: Int, reverseLayout: Boolean = false) :
     LinearLayoutManager(context, orientation, reverseLayout) {
     override fun smoothScrollToPosition(

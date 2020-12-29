@@ -11,9 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dpdlad.carousel.R
 import com.squareup.picasso.Picasso
 
-
+/**
+ *  @author Praveen Kumar Sugumaran
+ */
 class CarouselViewAdapter : RecyclerView.Adapter<CarouselViewAdapter.ViewHolder>() {
-    private val bannerUrls = ArrayList<String>()
+    private val bannerUrls = ArrayList<BannerUrlInfo>()
     private var onClickListener: CarouselClickListener? = null
 
     class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
@@ -28,11 +30,11 @@ class CarouselViewAdapter : RecyclerView.Adapter<CarouselViewAdapter.ViewHolder>
             compatImageView?.setOnClickListener(this)
         }
 
-        fun bind(url: String) {
-            Picasso.with(view.context).load(url)
+        fun bind(bannerUrlInfo: BannerUrlInfo) {
+            Picasso.with(view.context).load(bannerUrlInfo.getBannerUrl())
                 .placeholder(R.drawable.image_1).error(R.drawable.image_2)
                 .fit()
-                .centerInside()
+                .centerCrop()
                 .into(compatImageView)
         }
 
@@ -69,7 +71,7 @@ class CarouselViewAdapter : RecyclerView.Adapter<CarouselViewAdapter.ViewHolder>
         this.onClickListener = onClickListener
     }
 
-    fun update(urls: ArrayList<String>) {
+    fun update(urls: ArrayList<BannerUrlInfo>) {
         this.bannerUrls.apply {
             clear()
             addAll(urls)
@@ -84,11 +86,12 @@ private fun getScreenWidth(): Int {
 
 private fun CardView.loadDefinedMargin(position: Int, itemCount: Int) {
     val deviceWidth = getScreenWidth()
+    val deviceHeight = context.resources.getDimensionPixelSize(R.dimen.default_carousel_card_height)
     val defaultCardMargin: Int =
         context.resources.getDimensionPixelSize(R.dimen.default_card_margin)
     val pixels: Int = context.resources.getDimensionPixelSize(R.dimen.default_margin_vertical)
     val customLayoutParams =
-        FrameLayout.LayoutParams((deviceWidth - pixels), (deviceWidth / 2))
+        FrameLayout.LayoutParams((deviceWidth - pixels), deviceHeight)
     val lastItemDetected = (position == itemCount - 1)
     val firstItemDetected = (position == 0)
     customLayoutParams.marginEnd = defaultCardMargin
@@ -100,3 +103,4 @@ private fun CardView.loadDefinedMargin(position: Int, itemCount: Int) {
     }
     layoutParams = customLayoutParams
 }
+
